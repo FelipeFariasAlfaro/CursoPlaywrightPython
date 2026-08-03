@@ -1,0 +1,4 @@
+{
+    "ver_todos_los_productos": "//a[@id='hero-cta-btn']",
+    "primer_producto": "//a[@data-testid='product-name-link-1']"
+}
