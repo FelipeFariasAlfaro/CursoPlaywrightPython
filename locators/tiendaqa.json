@@ -1,4 +1,28 @@
 {
     "ver_todos_los_productos": "//a[@id='hero-cta-btn']",
-    "primer_producto": "//a[@data-testid='product-name-link-1']"
+    "primer_producto": "//a[@data-testid='product-name-link-1']",
+    "btn_incrementar": "//button[@id='qty-increase']",
+    "add_al_carrito": "//button[@id='add-to-cart-btn']",
+    "ver_carrito": "//a[@id='view-cart-btn']",
+    "ir_al_pago": "//a[text()='Proceder al pago']",
+    "input_nombre": "//input[@data-testid='input-firstName']",
+    "input_apellido": "//input[@id='lastName']",
+    "input_mail":"//input[@type='email']",
+    "input_fono": "//input[@name='phone']",
+    "btn_continuar_pago": "//button[@id='next-step-btn']",
+    "input_direccion": "//input[@placeholder='Av. Ejemplo 123']",
+    "input_ciudad": "//label[contains(text(), 'Ciudad')]//following-sibling::input",
+    "input_region": "//input[@data-testid='input-region']",
+    "codigo_postal": "#zip",
+    "envio_express": "//div[@id='shipping-options']//label//div//p[text()='Envío express']",
+    "continua_a_pago": "(//div[@data-testid='checkout-navigation']//button)[2]",
+
+    "nombre_tarjeta": "#cardName",
+    "numero_tarjeta": "//input[@placeholder='1234 5678 9012 3456']",
+    "vencimiento_tarjeta": "//input[@name='cardExpiry']",
+    "ccv_tarjeta": "//label[@for='cardCvv']//following-sibling::input",
+    "boton_confirmar_perdido": "#next-step-btn"
+
+
+    
 }
