@@ -1,0 +1,35 @@
+{
+    "proyecto": {
+        "nombre": "Tienda QA - Pruebas E2E",
+        "descripcion": "Suite de pruebas automatizadas end-to-end con Playwright y Behave",
+        "version": "1.0.0",
+        "ambiente": "QA"
+    },
+    "equipo": {
+        "nombre": "QA Automation Team",
+        "ingeniero_qa": "Felipe Farias",
+        "empresa": "Centyc",
+        "contacto": "felipe.farias@centyc.cl"
+    },
+    "apariencia": {
+        "logo_url": "",
+        "color_primario": "#6366f1",
+        "color_secundario": "#8b5cf6",
+        "color_exito": "#10b981",
+        "color_fallo": "#ef4444",
+        "color_omitido": "#f59e0b",
+        "color_fondo": "#0f172a",
+        "color_tarjeta": "#1e293b",
+        "color_texto": "#f8fafc",
+        "color_texto_secundario": "#94a3b8",
+        "fuente": "'Inter', 'Segoe UI', system-ui, sans-serif"
+    },
+    "reporte": {
+        "titulo": "Reporte de Pruebas Automatizadas",
+        "mostrar_duracion": true,
+        "mostrar_timestamps": true,
+        "mostrar_graficos": true,
+        "screenshots_como_thumbnail": true,
+        "thumbnail_width": "320px"
+    }
+}

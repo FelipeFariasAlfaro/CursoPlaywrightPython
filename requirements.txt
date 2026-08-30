@@ -1,2 +1,3 @@
 playwright
 behave>=1.3.3
+python-dotenv>=1.0.0
