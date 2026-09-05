@@ -2,7 +2,7 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 
-selectores = load_locators('tiendaqa.json')
+selectores = load_locators('tiendaqa', 'formulario')
 
 @step('ingreso a la página "{url}"')
 def step_ingreso_a_pagina(context, url):

@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-def ejecutar_tests(tags='@centyc-e2e'):
+def ejecutar_tests(tags='@formulario1'):
 
     command = [sys.executable, '-m', 'behave', '--no-capture', '--no-skipped']
     command.extend(['--tags', tags])

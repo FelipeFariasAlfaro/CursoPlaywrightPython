@@ -1,0 +1,9 @@
+{
+    "fc_tab_formulario": "//button[text()='FORMULARIO']",
+    "fc_input_nombre": "//input[@name='nombre']",
+    "fc_input_email": "//input[@type='email']",
+    "fc_tipo_consulta": "//select[@name='motivo']",
+    "fc_fecha_nacimiento": "//input[@type='date']",
+    "fc_asunto": "//input[@name='asunto']",
+    "fc_mensaje": "//textarea[@name='mensaje']"
+}
