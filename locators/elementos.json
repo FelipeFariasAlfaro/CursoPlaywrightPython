@@ -1,0 +1,5 @@
+{
+    "pe_menu_elementos": "//button[text()='Elementos Variados']",
+    "pe_rango":"//input[@type='range']",
+    "valor_rango": "//span[@id='valorRange']"
+}

@@ -2,7 +2,7 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 
-selectores = load_locators('tiendaqa', 'formulario')
+selectores = load_locators('tiendaqa', 'formulario', 'elementos')
 
 @step('ingreso a la página "{url}"')
 def step_ingreso_a_pagina(context, url):
@@ -12,7 +12,7 @@ def step_ingreso_a_pagina(context, url):
 def step_impl(context, element):
    elemento_web = context.page.locator(selectores[element])
    elemento_web.click()
-   context.page.wait_for_timeout(5000)
+   context.page.wait_for_timeout(1000)
 
 @step(u'presiono el elemento "{elemento}" un numero de {cantidad:d} veces')
 def step_impl(context, elemento, cantidad):
