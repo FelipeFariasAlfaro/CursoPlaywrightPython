@@ -1,5 +1,7 @@
 {
     "pe_menu_elementos": "//button[text()='Elementos Variados']",
     "pe_rango":"//input[@type='range']",
-    "valor_rango": "//span[@id='valorRange']"
+    "valor_rango": "//span[@id='valorRange']",
+    "fc_check_rojo": "//label[text()='Rojo']//child::input[@type='checkbox']",
+    "fc_check_azul": "//label[text()='Azul']//child::input[@type='checkbox']"
 }

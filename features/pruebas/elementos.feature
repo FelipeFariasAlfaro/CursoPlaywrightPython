@@ -30,7 +30,27 @@ Feature: Pruebas en elementos web variados
         When muevo el elemento de rango hasta el valor de 10
         And vuelvo a la pestaña original sin cerrar la nueva
         And hago scroll al fondo de la pagina
-        And espero 5 segundos    
+        And espero 5 segundos  
+
+
+    @check_marcar @checks
+    Scenario: Marcar un checkbox y validar que queda seleccionado
+        Given ingreso a la página "https://centyc.cl/practica"
+        And hago click en "fc_tab_formulario"
+        When marco el checkbox "fc_check_rojo"
+        Then el checkbox "fc_check_rojo" debe estar marcado
+        And espero 5 segundos
+
+    @check_desmarcar @checks
+    Scenario: Desmarcar un checkbox y validar que queda sin seleccionar
+        Given ingreso a la página "https://centyc.cl/practica"
+        And hago click en "fc_tab_formulario"
+        When marco el checkbox "fc_check_azul"
+        And espero 3 segundos
+        And desmarco el checkbox "fc_check_azul"
+        And espero 3 segundos
+        Then el checkbox "fc_check_azul" no debe estar marcado      
+        And espero 3 segundos
 
 
 
