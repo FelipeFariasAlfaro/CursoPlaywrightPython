@@ -50,7 +50,6 @@ def step_impl(context, url):
     context.page = nueva_tab
 
 
-
 @step(u'vuelvo a la pestaña original')
 def step_impl(context):
     context.page.close()
