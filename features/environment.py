@@ -29,8 +29,17 @@ def before_feature(context, feature):
 
 def before_scenario(context, scenario):
     """Crea una nueva página antes de cada escenario en pantalla completa."""
-    context.browser_context = context.browser.new_context(no_viewport=True)
-    context.page = context.browser_context.new_page()
+
+    if "view_mobile" in scenario.tags:
+        dispositivo = context.playwright.devices["iPhone 13"]
+        context.browser_context = context.browser.new_context(**dispositivo)
+        context.page = context.browser_context.new_page()
+
+    else:     
+        context.browser_context = context.browser.new_context(no_viewport=True)
+        context.page = context.browser_context.new_page()
+
+
     context.page.set_default_timeout(DEFAULT_TIMEOUT)
     context.page.set_default_navigation_timeout(NAVIGATION_TIMEOUT)
 
