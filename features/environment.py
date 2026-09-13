@@ -29,11 +29,11 @@ def before_feature(context, feature):
 
 def before_scenario(context, scenario):
     """Crea una nueva página antes de cada escenario en pantalla completa."""
-    context.page = context.browser.new_page(no_viewport=True)
+    context.browser_context = context.browser.new_context(no_viewport=True)
+    context.page = context.browser_context.new_page()
     context.page.set_default_timeout(DEFAULT_TIMEOUT)
     context.page.set_default_navigation_timeout(NAVIGATION_TIMEOUT)
 
-    # Registrar inicio de escenario
     context.report.start_scenario(scenario)
 
 
@@ -56,8 +56,8 @@ def after_scenario(context, scenario):
     # Registrar fin de escenario
     context.report.end_scenario(scenario)
 
-    if hasattr(context, 'page') and context.page:
-        context.page.close()
+    if hasattr(context, 'browser_context') and context.page:
+        context.browser_context.close()
 
 
 def after_feature(context, feature):

@@ -39,8 +39,29 @@ def step_impl(context, valorFinal):
     assert valor_obtenido == valorFinal, f"Falló: Se esperaba {valorFinal} pero se obtiene {valor_obtenido}"
 
 
+@step(u'abro una nueva pestaña con la URL "{url}"')
+def step_impl(context, url):
+    #asignamos la tab a un objeto temporal
+    context.tab_original = context.page
+
+    nueva_tab = context.page.context.new_page()
+    nueva_tab.goto(url)
+
+    context.page = nueva_tab
 
 
+
+@step(u'vuelvo a la pestaña original')
+def step_impl(context):
+    context.page.close()
+    context.page = context.tab_original
+
+@step(u'vuelvo a la pestaña original sin cerrar la nueva')
+def step_impl(context):
+    context.tab_original.bring_to_front()
+    context.page = context.tab_original
+
+ 
 
     
 
