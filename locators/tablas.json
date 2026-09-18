@@ -1,0 +1,6 @@
+{
+
+    "seccion_tablas": "//button[text()='TABLAS']",
+    "columna_paises": "//tbody//tr//td[1]"
+
+}

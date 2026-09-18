@@ -2,13 +2,13 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 
-selectores = load_locators('tiendaqa', 'formulario', 'elementos')
+selectores = load_locators('tiendaqa', 'formulario', 'elementos', 'tablas')
 
 @step('ingreso a la página "{url}"')
 def step_ingreso_a_pagina(context, url):
     context.page.goto(url)
 
-@step(u'hago click en "{element}"') #primer_producto
+@step(u'hago click en "{element}"')
 def step_impl(context, element):
    elemento_web = context.page.locator(selectores[element])
    elemento_web.click()

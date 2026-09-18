@@ -86,6 +86,17 @@ def step_impl(context, opcion_check):
 def step_impl(context, opcion_check):
     checkbox = context.page.locator(selectores[opcion_check])
     expect(checkbox).not_to_be_checked()
+
+@step(u'la columna de paises debe contener exactamente')
+def step_impl(context):
+    # Países esperados que vienen de la data table del feature
+    paises_esperados = [row["pais"] for row in context.table]
+
+    # Locator que resuelve TODAS las celdas de la primera columna
+    columna_paises = context.page.locator(selectores['tbl_columna_paises'])
+
+    # expect con una lista valida cantidad y orden a la vez, con reintentos
+    expect(columna_paises).to_have_text(paises_esperados)    
      
 
  
