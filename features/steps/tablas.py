@@ -3,6 +3,7 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 
+
 selectores = load_locators('tablas')
 
 #@then(u'valido que los elementos de la columna "{header1}"con localizador "{xpath}" son correctos')
@@ -33,4 +34,5 @@ def step_impl(context, header1, xpath):
             f"  Esperado : '{esperado}'\n"
             f"  Obtenido : '{obtenido}'"
         )       
+
 

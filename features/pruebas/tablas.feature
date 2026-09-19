@@ -14,3 +14,4 @@ Feature: Pruebas con tablas
             | Francia       |
             | Japón         |
             | Korea del Sur |
+

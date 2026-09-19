@@ -1,0 +1,5 @@
+{
+    "tab_archivos":"//*[text()='SUBIR ARCHIVOS']",
+    "input_archivos":"//input[@id='file-input']",
+    "btn_subir_archivo":"//button[@id='upload-btn']"
+}
