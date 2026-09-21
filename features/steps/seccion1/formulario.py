@@ -2,7 +2,7 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 
-selectores = load_locators('formulario')
+selectores = load_locators()
 
 @step(u'selecciono en el elemento "{localizador}" la opción "{opcion}"')
 def step_selecciono_opcion_formulario(context, localizador, opcion):

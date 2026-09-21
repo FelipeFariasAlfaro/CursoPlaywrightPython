@@ -3,6 +3,7 @@ from behave import step
 from helpers.locator_loader import load_locators
 from playwright.sync_api import expect
 from time import sleep
+import time
 
 selectores = load_locators()
 

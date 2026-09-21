@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-def ejecutar_tests(tags='@DragAndDrop1'):
+def ejecutar_tests(tags='@prueba_tiempo2'):
 
     command = [sys.executable, '-m', 'behave', '--no-capture', '--no-skipped']
     command.extend(['--tags', tags])
@@ -13,4 +13,4 @@ def ejecutar_tests(tags='@DragAndDrop1'):
         return 1
 
 if __name__ == "__main__":
-    sys.exit(ejecutar_tests())    
+    sys.exit(ejecutar_tests())

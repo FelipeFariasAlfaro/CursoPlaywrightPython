@@ -1,0 +1,4 @@
+{
+    "campo_busqueda_youtube": "//input[@name='search_query']",
+    "boton_buscar_youtube": "//button[@title='Buscar']" 
+}

@@ -13,4 +13,3 @@ Feature: Dibujos arrastrando el mouse
         And hago click en "menu_arrastrar_y_soltar"
         When muevo el elemento "seccion_arrastrable" una distancia de -200 en x y -400 en y
         And espero 5 segundos
-
