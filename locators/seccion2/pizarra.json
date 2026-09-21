@@ -1,0 +1,7 @@
+{
+    "menu_pizarra": "//button[text()='Pizarra']",
+    "elemento_pizarra": "//canvas[@id='pizarraReal']",
+    "menu_arrastrar_y_soltar": "//a[@id='list-item-drag-and-drop-list']",
+    "seccion_arrastrable": "//img[@id='draggableItem']",
+    "titulo_interacciones": "//h1[text()='Interacciones']//parent::div"
+}

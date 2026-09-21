@@ -21,6 +21,22 @@ def _load_single(filename):
     )
 
 
+def _descubrir_todos_los_json():
+    """Devuelve los nombres de todos los .json dentro de /locators/ (recursivo)."""
+    encontrados = []
+    for root, _dirs, files in os.walk(LOCATORS_DIR):
+        for f in files:
+            if f.endswith('.json'):
+                encontrados.append(f)
+
+    if not encontrados:
+        raise FileNotFoundError(
+            f"No se encontró ningún archivo .json en {LOCATORS_DIR}"
+        )
+
+    return sorted(encontrados)
+
+
 def load_locators(*filenames):
     """
     Carga localizadores desde uno o varios archivos JSON, buscando
@@ -36,6 +52,9 @@ def load_locators(*filenames):
         locators = load_locators('tiendaqa', 'formulario')
         locators = load_locators(['tiendaqa', 'formulario'])
 
+    Cargar TODOS los .json de /locators/ (sin argumentos):
+        locators = load_locators()
+
     Luego:
         page.locator(locators['titulo']).click()
 
@@ -47,8 +66,9 @@ def load_locators(*filenames):
     if len(filenames) == 1 and isinstance(filenames[0], (list, tuple)):
         filenames = tuple(filenames[0])
 
+    # Sin argumentos: cargar todos los .json de /locators/ (recursivo).
     if not filenames:
-        raise ValueError("Debes indicar al menos un archivo de localizadores.")
+        filenames = _descubrir_todos_los_json()
 
     combinado = {}
     for filename in filenames:
