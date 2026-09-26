@@ -1,3 +1,4 @@
+@prueba_paralela @medicion
 Feature: Pruebas de medición de tiempos de respuesta
 
     @prueba_tiempo1
@@ -11,4 +12,3 @@ Feature: Pruebas de medición de tiempos de respuesta
         And ingreso el texto "Completo Italiano" en el campo "campo_busqueda_youtube"
         #When hago click en "boton_buscar_youtube"
         Then al hacer click en "boton_buscar_youtube" el servicio "https://www.youtube.com/youtubei/v1/search?prettyPrint=false" debe responder en menos de 100 ms
-        And espero 3 segundos

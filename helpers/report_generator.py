@@ -30,6 +30,13 @@ def _get_env_bool(key, default=False):
     return value in ('true', '1', 'yes', 'si')
 
 
+def _json_serial(obj):
+    """Serializa objetos datetime a texto ISO para poder guardarlos en JSON."""
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError(f"Tipo no serializable: {type(obj)}")
+
+
 def _load_report_config():
     """Carga la configuración del reporte desde report_config.json."""
     config_path = PROJECT_ROOT / 'report_config.json'
@@ -48,6 +55,12 @@ REPORT_CLEAN_BEFORE_RUN = _get_env_bool('REPORT_CLEAN_BEFORE_RUN', True)
 SCREENSHOT_ON_EACH_STEP = _get_env_bool('SCREENSHOT_ON_EACH_STEP', True)
 SCREENSHOT_ONLY_ON_FAILURE = _get_env_bool('SCREENSHOT_ONLY_ON_FAILURE', False)
 REPORT_OPEN_AFTER_RUN = _get_env_bool('REPORT_OPEN_AFTER_RUN', False)
+
+# Modo consolidado: si está activo, cada proceso guarda sus datos crudos
+# en JSON (en lugar de generar su propio HTML) para luego unirlos en uno solo.
+REPORT_CONSOLIDATED = _get_env_bool('REPORT_CONSOLIDATED', False)
+# Carpeta compartida donde los procesos paralelos dejan sus JSON de datos.
+CONSOLIDATED_DIR = os.getenv('CONSOLIDATED_DIR', 'reports/_consolidado_data')
 
 # Rutas absolutas
 REPORT_OUTPUT_PATH = PROJECT_ROOT / REPORT_OUTPUT_DIR
@@ -208,11 +221,59 @@ class ReportCollector:
             return
 
         self.end_time = datetime.now()
-        self._generate_html_report()
 
-        if REPORT_OPEN_AFTER_RUN:
-            import webbrowser
-            webbrowser.open(REPORT_FILE_PATH.as_uri())
+        if REPORT_CONSOLIDATED:
+            # En paralelo: cada proceso guarda sus datos crudos en un JSON.
+            # El HTML único lo arma después el consolidador.
+            self._dump_data()
+        else:
+            # Modo normal: cada ejecución genera su propio HTML.
+            self._generate_html_report()
+
+            if REPORT_OPEN_AFTER_RUN:
+                import webbrowser
+                webbrowser.open(REPORT_FILE_PATH.as_uri())
+
+    # ══════════════════════════════════════════════════════════
+    # MODO CONSOLIDADO (paralelo)
+    # ══════════════════════════════════════════════════════════
+
+    def _dump_data(self):
+        """Guarda los datos crudos de esta ejecución en un JSON compartido."""
+        carpeta = PROJECT_ROOT / CONSOLIDATED_DIR
+        carpeta.mkdir(parents=True, exist_ok=True)
+
+        datos = {
+            'features': self.features,
+            'start_time': self.start_time.isoformat() if self.start_time else None,
+            'end_time': self.end_time.isoformat() if self.end_time else None,
+        }
+
+        # Nombre único por proceso para que no se pisen entre paralelas.
+        nombre = f"datos_{os.getpid()}_{datetime.now().strftime('%H%M%S_%f')}.json"
+        ruta = carpeta / nombre
+
+        with open(ruta, 'w', encoding='utf-8') as f:
+            json.dump(datos, f, ensure_ascii=False, default=_json_serial)
+
+    def cargar_desde_datos(self, features, start_time, end_time):
+        """Carga datos ya recopilados (usado por el consolidador)."""
+        self.features = features
+        self.start_time = start_time
+        self.end_time = end_time
+
+    def generar_html_en(self, ruta_salida):
+        """Genera el HTML en una ruta específica (usado por el consolidador)."""
+        config = self.config
+        html = self._build_html(
+            config.get('apariencia', {}),
+            config.get('proyecto', {}),
+            config.get('equipo', {}),
+            config.get('reporte', {}),
+            self._calculate_stats(),
+        )
+        with open(ruta_salida, 'w', encoding='utf-8') as f:
+            f.write(html)
 
     # ══════════════════════════════════════════════════════════
     # GENERACIÓN DEL HTML

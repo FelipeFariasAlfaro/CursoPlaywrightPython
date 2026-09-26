@@ -11,9 +11,13 @@ NAVIGATION_TIMEOUT = 30000     # Timeout para navegación (goto, reload, etc.)
 
 def before_all(context):
     """Inicia Playwright y el colector de reportes antes de todas las pruebas."""
+    # HEADLESS configurable por entorno: 'true' para paralelo/CI (sin ventana),
+    # por defecto 'false' para ver el navegador en clase.
+    headless = os.getenv('HEADLESS', 'false').lower() in ('true', '1', 'yes', 'si')
+
     context.playwright = sync_playwright().start()
     context.browser = context.playwright.chromium.launch(
-        headless=False,
+        headless=headless,
         args=["--start-maximized"]
     )
 

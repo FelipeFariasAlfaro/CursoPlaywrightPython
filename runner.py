@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-def ejecutar_tests(tags='@prueba_tiempo2'):
+def ejecutar_tests(tags='@prueba_paralela'):
 
     command = [sys.executable, '-m', 'behave', '--no-capture', '--no-skipped']
     command.extend(['--tags', tags])

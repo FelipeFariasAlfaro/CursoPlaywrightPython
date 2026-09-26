@@ -99,7 +99,3 @@ def step_impl(context):
     expect(columna_paises).to_have_text(paises_esperados)    
      
 
- 
-
-    
-

@@ -34,13 +34,9 @@ def step_impl(context, localizador, lado):
     mouse.move(esquina_superior_izq[0], esquina_superior_izq[1])
     mouse.down()
     mouse.move(esquina_superior_der[0], esquina_superior_der[1])
-    sleep(1)
     mouse.move(esquina_inferior_der[0], esquina_inferior_der[1])
-    sleep(1)
     mouse.move(esquina_inferior_izq[0], esquina_inferior_izq[1])
-    sleep(1)
     mouse.move(esquina_superior_izq[0], esquina_superior_izq[1])
-    sleep(1)
     mouse.up() #levantamos el click del mouse para dejar de dibujar
 
 
