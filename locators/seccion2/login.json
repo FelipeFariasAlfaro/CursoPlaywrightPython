@@ -1,0 +1,9 @@
+{
+    "tab_formulario1": "//button[text()='Formulario 1']",
+    "campo_usuario_login": "//input[@id='uname']",
+    "campo_pass_login": "//input[@id='pwd']",
+    "btn_send_login": "//button[@id='send_form_test']",
+    "mensaje_usuario": "//label[text()='Usuario:']//following-sibling::p",
+    "mensaje_password": "//label[text()='Password:']//following-sibling::p",
+    "mensaje_sin_check": "//p[text()='Debes marcar el check antes de continuar.']"
+}

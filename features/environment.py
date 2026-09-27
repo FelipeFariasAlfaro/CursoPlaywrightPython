@@ -66,7 +66,6 @@ def after_step(context, step):
 
 def after_scenario(context, scenario):
     """Cierra la página y registra fin del escenario."""
-    # Registrar fin de escenario
     context.report.end_scenario(scenario)
 
     if hasattr(context, 'browser_context') and context.page:
