@@ -1,7 +1,7 @@
 Feature: Login de ingreso a centyc
 
     @login_test1
-    Scenario: Verificar mensajes al no seleccionar el check de aceptacióno
+    Scenario: Verificar mensajes al no seleccionar el check de aceptación
         Given ingreso a la página "https://centyc.cl/pruebas/elementos-web"
         And hago click en "tab_formulario1"
         And ingreso el texto "felipe.farias@centyc.cl" en el campo "campo_usuario_login"

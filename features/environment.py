@@ -3,6 +3,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from playwright.sync_api import sync_playwright
 from helpers.report_generator import ReportCollector, REPORT_ENABLED
+from helpers.trace_manager import iniciar_trace, guardar_trace
 
 # Timeouts globales (en milisegundos)
 DEFAULT_TIMEOUT = 10000        # Timeout para acciones (click, fill, etc.)
@@ -47,6 +48,8 @@ def before_scenario(context, scenario):
     context.page.set_default_timeout(DEFAULT_TIMEOUT)
     context.page.set_default_navigation_timeout(NAVIGATION_TIMEOUT)
 
+    iniciar_trace(context)
+
     context.report.start_scenario(scenario)
 
 
@@ -67,6 +70,8 @@ def after_step(context, step):
 def after_scenario(context, scenario):
     """Cierra la página y registra fin del escenario."""
     context.report.end_scenario(scenario)
+
+    guardar_trace(context, scenario)   # antes de cerrar el contexto
 
     if hasattr(context, 'browser_context') and context.page:
         context.browser_context.close()
