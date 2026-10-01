@@ -41,7 +41,8 @@ def before_scenario(context, scenario):
         context.page = context.browser_context.new_page()
 
     else:     
-        context.browser_context = context.browser.new_context(no_viewport=True)
+        context.browser_context = context.browser.new_context(no_viewport=True, 
+                                                              permissions=["geolocation"])
         context.page = context.browser_context.new_page()
 
 

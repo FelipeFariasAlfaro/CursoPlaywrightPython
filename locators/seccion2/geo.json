@@ -1,0 +1,6 @@
+{
+    "menu_geo": "//button[text()='Geolocalización']",
+    "btn_obtener_mi_geo":"//button[@id='btn-geolocalizacion']",
+    "resultado_latitud": "//td[@id='geo-latitude']",
+    "resultado_longitud": "//td[@id='geo-longitude']"
+}
