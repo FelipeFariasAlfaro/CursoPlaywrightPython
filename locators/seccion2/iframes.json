@@ -1,0 +1,5 @@
+{
+    "tab_iframe":"//button[text()='iFrame']",
+    "iframe_simple": "//iframe[@data-testid='practica-iframe']",
+    "input_iframe": "//input[@id='iframe-input']"
+}

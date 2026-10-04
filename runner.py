@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-def ejecutar_tests(tags='@pruebas_logins'):
+def ejecutar_tests(tags='@iframe1'):
 
     command = [sys.executable, '-m', 'behave', '--no-capture', '--no-skipped']
     command.extend(['--tags', tags])
