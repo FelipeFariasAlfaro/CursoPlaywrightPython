@@ -189,6 +189,37 @@ class ReportCollector:
 
         self._current_scenario['steps'].append(step_data)
 
+    def registrar_api(self, metodo, url, status, request_body=None,
+                      response_body=None, request_headers=None, ok=True):
+        """
+        Registra una llamada API (request/response) en el escenario actual
+        del reporte, para que aparezca en el HTML junto a los steps.
+        """
+        if not REPORT_ENABLED or self._current_scenario is None:
+            return
+
+        api_item = {
+            'keyword': 'API',
+            'name': f"{metodo} {url}  →  {status}",
+            'status': 'passed' if ok else 'failed',
+            'duration': 0,
+            'screenshot': None,
+            'error_message': None,
+            'api': {
+                'metodo': metodo,
+                'url': url,
+                'status': status,
+                'request_headers': request_headers or {},
+                'request_body': request_body,
+                'response_body': response_body,
+            },
+        }
+
+        if not ok:
+            self._current_scenario['status'] = 'failed'
+
+        self._current_scenario['steps'].append(api_item)
+
     def capture_screenshot(self, page, step, scenario):
         """Captura screenshot si corresponde según configuración."""
         if not REPORT_ENABLED:
@@ -608,6 +639,35 @@ class ReportCollector:
             box-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }}
 
+        /* ─── BLOQUE API (request/response) ─── */
+        .api-block {{
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }}
+        .api-row {{ display: flex; flex-direction: column; gap: 0.25rem; }}
+        .api-label {{
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: {c['txt2']};
+            font-weight: 600;
+        }}
+        .api-pre {{
+            background: {c['bg']};
+            border: 1px solid {c['pri']}25;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: {c['txt']};
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 260px;
+            overflow-y: auto;
+        }}
+
         /* ─── MODAL ─── */
         .modal-overlay {{
             display: none;
@@ -907,6 +967,9 @@ class ReportCollector:
                 if img_src:
                     screenshot_html = f'<div class="step-screenshot"><img src="{img_src}" alt="Screenshot" loading="lazy"></div>'
 
+            # Bloque de detalle para llamadas API (request/response)
+            api_html = self._build_api_html(step.get('api'), c)
+
             parts.append(f"""
                 <div class="step-item {css_cls}">
                     <div class="step-icon">{icon}</div>
@@ -914,9 +977,36 @@ class ReportCollector:
                         <span class="step-keyword">{step['keyword']} </span>
                         <span class="step-text">{step['name']}</span>
                         {screenshot_html}
+                        {api_html}
                     </div>
                 </div>""")
         return '\n'.join(parts)
+
+    def _build_api_html(self, api, c):
+        """Genera el bloque colapsable con request y response de una llamada API."""
+        if not api:
+            return ''
+
+        def _fmt(valor):
+            """Formatea un cuerpo (dict/list -> JSON indentado) y escapa HTML."""
+            if valor is None:
+                return '(vacío)'
+            if isinstance(valor, (dict, list)):
+                texto = json.dumps(valor, ensure_ascii=False, indent=2)
+            else:
+                texto = str(valor)
+            return texto.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+        headers_txt = _fmt(api.get('request_headers'))
+        req_txt = _fmt(api.get('request_body'))
+        resp_txt = _fmt(api.get('response_body'))
+
+        return f"""
+            <div class="api-block">
+                <div class="api-row"><span class="api-label">Request Headers</span><pre class="api-pre">{headers_txt}</pre></div>
+                <div class="api-row"><span class="api-label">Request Body</span><pre class="api-pre">{req_txt}</pre></div>
+                <div class="api-row"><span class="api-label">Response ({api.get('status')})</span><pre class="api-pre">{resp_txt}</pre></div>
+            </div>"""
 
     def _build_donut_svg(self, stats, c):
         """Genera gráfico SVG de dona."""

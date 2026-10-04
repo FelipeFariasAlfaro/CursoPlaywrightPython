@@ -10,17 +10,27 @@ DEFAULT_TIMEOUT = 10000        # Timeout para acciones (click, fill, etc.)
 NAVIGATION_TIMEOUT = 30000     # Timeout para navegación (goto, reload, etc.)
 
 
-def before_all(context):
-    """Inicia Playwright y el colector de reportes antes de todas las pruebas."""
-    # HEADLESS configurable por entorno: 'true' para paralelo/CI (sin ventana),
-    # por defecto 'false' para ver el navegador en clase.
-    headless = os.getenv('HEADLESS', 'false').lower() in ('true', '1', 'yes', 'si')
+def _asegurar_navegador(context):
+    """Lanza el navegador solo la primera vez que se necesita (perezoso).
 
-    context.playwright = sync_playwright().start()
+    Así, una ejecución 100% de API (@api) nunca abre navegador.
+    """
+    if getattr(context, 'browser', None) is not None:
+        return
+
+    headless = os.getenv('HEADLESS', 'false').lower() in ('true', '1', 'yes', 'si')
     context.browser = context.playwright.chromium.launch(
         headless=headless,
         args=["--start-maximized"]
     )
+
+
+def before_all(context):
+    """Inicia Playwright y el colector de reportes antes de todas las pruebas."""
+    # El navegador NO se lanza aquí: se abre bajo demanda en el primer
+    # escenario que lo necesite (ver _asegurar_navegador).
+    context.playwright = sync_playwright().start()
+    context.browser = None
 
     # Inicializar reporte
     context.report = ReportCollector()
@@ -35,7 +45,20 @@ def before_feature(context, feature):
 def before_scenario(context, scenario):
     """Crea una nueva página antes de cada escenario en pantalla completa."""
 
-    if "view_mobile" in scenario.tags:
+    # Tags del escenario + los heredados de la feature (Behave no los une solo).
+    tags = set(scenario.tags) | set(scenario.feature.tags)
+
+    # Escenarios de API no necesitan navegador: no lo abrimos.
+    context.browser_context = None
+    context.page = None
+    if "api" in tags:
+        context.report.start_scenario(scenario)
+        return
+
+    # Para el resto, aseguramos el navegador (se abre la primera vez).
+    _asegurar_navegador(context)
+
+    if "view_mobile" in tags:
         dispositivo = context.playwright.devices["iPhone 13"]
         context.browser_context = context.browser.new_context(**dispositivo)
         context.page = context.browser_context.new_page()
@@ -72,10 +95,12 @@ def after_scenario(context, scenario):
     """Cierra la página y registra fin del escenario."""
     context.report.end_scenario(scenario)
 
-    guardar_trace(context, scenario)   # antes de cerrar el contexto
+    # Escenarios de API no abrieron navegador: nada que cerrar ni traza.
+    if getattr(context, 'browser_context', None) is None:
+        return
 
-    if hasattr(context, 'browser_context') and context.page:
-        context.browser_context.close()
+    guardar_trace(context, scenario)   # antes de cerrar el contexto
+    context.browser_context.close()
 
 
 def after_feature(context, feature):
