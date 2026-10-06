@@ -242,6 +242,16 @@ class ReportCollector:
             filepath = SCREENSHOTS_PATH / filename
 
             page.screenshot(path=str(filepath), full_page=False)
+
+            # En modo consolidado (paralelo/CI con sharding), el reporte se
+            # genera en OTRO proceso o máquina donde el archivo de imagen no
+            # existe. Por eso embebemos el screenshot como base64 aquí mismo:
+            # así viaja dentro del JSON de datos y no depende del archivo.
+            if REPORT_CONSOLIDATED:
+                with open(filepath, 'rb') as f:
+                    b64 = base64.b64encode(f.read()).decode('utf-8')
+                return f"data:image/png;base64,{b64}"
+
             return str(filepath)
         except Exception:
             return None
@@ -1035,10 +1045,25 @@ class ReportCollector:
         </svg>"""
 
     @staticmethod
-    def _screenshot_to_src(screenshot_path):
-        """Convierte screenshot a base64 data URI para portabilidad."""
+    def _screenshot_to_src(screenshot):
+        """Devuelve el src de la imagen para el <img> del reporte.
+
+        Acepta dos formatos:
+        - Un data URI ya embebido ("data:image/png;base64,...") -> se usa tal cual.
+          (Caso de modo consolidado/CI: el base64 se generó al capturar.)
+        - Una ruta de archivo -> se lee y se convierte a base64.
+          (Caso local normal.)
+        """
+        if not screenshot:
+            return None
+
+        # Ya viene embebido como base64 (modo consolidado): usar directo.
+        if isinstance(screenshot, str) and screenshot.startswith('data:image'):
+            return screenshot
+
+        # Es una ruta de archivo: leer y convertir.
         try:
-            path = Path(screenshot_path)
+            path = Path(screenshot)
             if path.exists():
                 with open(path, 'rb') as f:
                     data = base64.b64encode(f.read()).decode('utf-8')
