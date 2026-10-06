@@ -1,0 +1,99 @@
+name: Pruebas Playwright + Behave
+
+on:
+  push:
+    branches: [sesion_34]
+  pull_request:
+    branches: [sesion_34]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Tag de Behave a ejecutar (ej. @api, @smoke)"
+        required: false
+        default: "@todas_las_apis"
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+
+    # ─── SHARDING: las features del tag se reparten entre estas máquinas ───
+    strategy:
+      fail-fast: false # si un shard falla, los demás siguen corriendo
+      matrix:
+        shard: [1] # número de máquinas en paralelo (agrega 3, 4... para más)
+
+    env:
+      # Total de shards = cantidad de elementos del matrix de arriba.
+      SHARD_TOTAL: 1
+      SHARD_INDEX: ${{ matrix.shard }}
+      HEADLESS: "true"
+      # Tag a ejecutar: el input manual tiene prioridad; si no, el default "@todas_las_apis".
+      BEHAVE_TAGS: ${{ github.event.inputs.tags || '@todas_las_apis' }}
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Instalar navegadores de Playwright
+        run: python -m playwright install --with-deps chromium
+
+      - name: Ejecutar pruebas (shard ${{ matrix.shard }})
+        run: python runner_ci.py
+
+      - name: Publicar datos del shard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          # Cada shard sube SOLO sus datos crudos (JSON), para unirlos luego.
+          name: datos-shard-${{ matrix.shard }}
+          path: reports/_consolidado_data/
+          if-no-files-found: ignore
+
+  # ─── Job final: une los datos de todos los shards en UN reporte ───
+  consolidar:
+    needs: pruebas # espera a que todos los shards terminen
+    if: always() # consolida aunque algún shard haya fallado
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Descargar datos de todos los shards
+        uses: actions/download-artifact@v4
+        with:
+          # Baja todos los artefactos 'datos-shard-*' a esta carpeta.
+          pattern: datos-shard-*
+          path: reports/_consolidado_data/
+          merge-multiple: true # fusiona todos en la misma carpeta
+
+      - name: Generar reporte unificado
+        run: python -m helpers.report_consolidator
+
+      - name: Publicar reporte unificado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-unificado
+          path: reports/reporte_pruebas.html
+          if-no-files-found: ignore
