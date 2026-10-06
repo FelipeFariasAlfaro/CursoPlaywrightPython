@@ -1,4 +1,4 @@
-@api @todas_las_apis
+@api @todas_las_apis @regresion
 Feature: Pruebas de API REST con JSONPlaceholder
     JSONPlaceholder es una API pública de pruebas (https://jsonplaceholder.typicode.com).
     

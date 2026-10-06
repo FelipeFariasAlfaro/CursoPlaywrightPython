@@ -3,7 +3,7 @@ import sys
 import os
 
 # Tag por defecto para ejecución LOCAL (si no se indica otro).
-TAG_POR_DEFECTO = '@todas_las_apis'
+TAG_POR_DEFECTO = '@regresion'
 
 
 def obtener_tags():

@@ -23,7 +23,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent
 FEATURES_DIR = PROJECT_ROOT / 'features' / 'pruebas'
 
-TAG = os.getenv('BEHAVE_TAGS', '@todas_las_apis')
+TAG = os.getenv('BEHAVE_TAGS', '@regresion')
 SHARD_INDEX = int(os.getenv('SHARD_INDEX', '1'))
 SHARD_TOTAL = int(os.getenv('SHARD_TOTAL', '1'))
 

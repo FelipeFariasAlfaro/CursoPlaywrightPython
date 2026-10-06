@@ -1,4 +1,4 @@
-@pruebas_logins
+@pruebas_logins @regresion
 Feature: Pruebas con logins
 
 

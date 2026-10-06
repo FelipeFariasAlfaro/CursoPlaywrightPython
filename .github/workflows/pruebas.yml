@@ -10,7 +10,7 @@ on:
       tags:
         description: "Tag de Behave a ejecutar (ej. @api, @smoke)"
         required: false
-        default: "@todas_las_apis"
+        default: "@regresion"
 
 jobs:
   pruebas:
@@ -20,15 +20,16 @@ jobs:
     strategy:
       fail-fast: false # si un shard falla, los demás siguen corriendo
       matrix:
-        shard: [1] # número de máquinas en paralelo (agrega 3, 4... para más)
+        shard: [1, 2] # número de máquinas en paralelo (agrega 3, 4... para más)
 
     env:
       # Total de shards = cantidad de elementos del matrix de arriba.
-      SHARD_TOTAL: 1
+      SHARD_TOTAL: 2
       SHARD_INDEX: ${{ matrix.shard }}
       HEADLESS: "true"
       # Tag a ejecutar: el input manual tiene prioridad; si no, el default "@todas_las_apis".
-      BEHAVE_TAGS: ${{ github.event.inputs.tags || '@todas_las_apis' }}
+      BEHAVE_TAGS: ${{ github.event.inputs.tags || '@regresion' }}
+      
 
     steps:
       - name: Clonar el repositorio
